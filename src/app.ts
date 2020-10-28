@@ -6,9 +6,6 @@ import express from 'express';
 import socketIo from 'socket.io';
 
 import {
-  Document,
-} from 'mongoose';
-import {
   container,
 } from './inversify.config';
 import {
@@ -22,12 +19,10 @@ import {
   MessageServiceInterface,
 } from './interfaces';
 import {
-  Message,
   NewMessage,
 } from './models/messageModel';
 
 interface SocketTest extends socketIo.Socket {
-  offset?: number,
   username: string,
 }
 
