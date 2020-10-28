@@ -44,7 +44,9 @@
     }],
     "modules-newline/import-declaration-newline": "error",
     "modules-newline/export-declaration-newline": "error",
-    "@typescript-eslint/no-inferrable-types": "off"
+    "@typescript-eslint/no-inferrable-types": "off",
+    "no-shadow": "off",
+    "@typescript-eslint/no-shadow": ["error"]
   },
   "settings": {
     "import/resolver": {
