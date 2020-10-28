@@ -216,11 +216,12 @@
 
   socket.on('display_messages', (data) => displayMessageHandler(data));
 
-  const getMoreMessages = document.querySelector('#getMoreButton');
+  const getMoreMessagesButton = document.querySelector('#getMoreButton');
+
+  socket.on('no_more_messages', () => alert('No more messages'));
 
   let offset = 1;
-
-  getMoreMessages.addEventListener('click', () => {
+  getMoreMessagesButton.addEventListener('click', () => {
     offset += 15;
     return socket.emit('get_more', offset);
   })

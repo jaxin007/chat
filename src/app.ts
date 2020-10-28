@@ -3,7 +3,10 @@ import 'dotenv/config';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import express from 'express';
-import socketIo from 'socket.io';
+import socketIo,
+{
+  Socket,
+} from 'socket.io';
 
 import {
   container,
@@ -19,12 +22,9 @@ import {
   MessageServiceInterface,
 } from './interfaces';
 import {
+  Message,
   NewMessage,
 } from './models/messageModel';
-
-interface SocketTest extends socketIo.Socket {
-  username: string,
-}
 
 const messageService = container.get<MessageServiceInterface>(TYPES.MessageService);
 
@@ -52,16 +52,14 @@ const server = app.listen(envConfig.PORT, () => {
 
 const io = socketIo(server);
 
-io.on(SocketEvents.connection, async (socket: SocketTest) => {
+io.on(SocketEvents.connection, async (socket: Socket) => {
   const messages = await messageService.getMessages();
 
   messages.forEach((message: any) => {
     io.sockets
       .emit(SocketEvents.displayMessages, {
+        ...message._doc,
         username: message.username,
-        text: message.text || null,
-        image: message.image || null,
-        video: message.video || null,
       });
   });
 
@@ -79,30 +77,32 @@ io.on(SocketEvents.connection, async (socket: SocketTest) => {
   socket.on(SocketEvents.getMore, async (offset: number) => {
     const moreMessages = await messageService.getMessages(offset);
 
-    return moreMessages.forEach((message: any) => {
+    if (!moreMessages.length) {
+      return io.sockets.emit(SocketEvents.noMoreMessages);
+    }
+
+    return (moreMessages as Message[]).forEach((message: Message) => {
       io.sockets
         .emit(SocketEvents.displayMessages, {
           username: message.username,
-          text: message.text || null,
-          image: message.image || null,
-          video: message.video || null,
+          text: message.text,
+          image: message.image,
+          video: message.video,
         });
     });
   });
 
   socket.on(SocketEvents.newMessage, async (message: NewMessage): Promise<boolean | void> => {
     if (!socket.username || !message) {
-      return socket.emit('no_username');
+      return socket.emit(SocketEvents.noUsername);
     }
 
     await messageService.addMessage(socket.username, message);
 
     return socket
       .emit(SocketEvents.receiveMessage, {
+        ...message,
         username: socket.username,
-        text: message.text || null,
-        image: message.image || null,
-        video: message.video || null,
       });
   });
 });
