@@ -7,6 +7,7 @@ export enum SocketEvents {
   noMoreMessages = 'no_more_messages',
   noUsername = 'no_username',
   receiveMessage = 'receive_message',
+  roomChoose = 'room_choose',
   setUsername = 'set_username',
   typing = 'typing',
 }
