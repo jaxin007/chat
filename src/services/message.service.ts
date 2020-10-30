@@ -5,16 +5,23 @@ import {
 } from 'inversify';
 
 import {
+  SchemaNames,
   TYPES,
 } from '../constants';
 import {
   messageSchema,
 } from '../schemas/messageSchema';
+import {
+  roomSchema,
+} from '../schemas/roomSchema';
 
 import {
   Message,
   NewMessage,
-} from '../models/messageModel';
+  NewRoomModel,
+  RoomModel,
+} from '../models';
+
 import {
   MessageServiceInterface,
 } from '../interfaces';
@@ -25,28 +32,59 @@ export class MessageService implements MessageServiceInterface {
 
   protected readonly messageModel: mongoose.Model<mongoose.Document>
 
+  protected readonly roomModel: mongoose.Model<mongoose.Document>
+
   constructor() {
-    this.messageModel = mongoose.model('Messages', messageSchema);
+    this.messageModel = mongoose.model(SchemaNames.message, messageSchema).on('error', (err) => console.error(err.message));
+    this.roomModel = mongoose.model(SchemaNames.room, roomSchema).on('error', (err) => console.error(err.message));
   }
 
-  async addMessage(username: string, message: NewMessage): Promise<mongoose.Document> {
-    return this.messageModel.create<Message>({
+  async addMessage(
+    username: string,
+    message: NewMessage,
+    roomId: string,
+  ): Promise<mongoose.DocumentQuery<null | mongoose.Document, mongoose.Document>> {
+    const newMessage = await this.messageModel.create<Message>({
       username,
-      image: message.image,
-      text: message.text,
-      video: message.video,
+      ...message,
+    });
+
+    await this.roomModel.findByIdAndUpdate(
+      roomId,
+      {
+        $push: {
+          messages: newMessage,
+        },
+      },
+    );
+
+    return newMessage;
+  }
+
+  async createRoom(roomName: string): Promise<mongoose.Document> {
+    return this.roomModel.create<NewRoomModel>({
+      roomName,
     });
   }
 
-  async getMessages(offset: number = 0): Promise<Message[] | mongoose.Document[]> {
+  async findRoom(roomName: string): Promise<mongoose.Document | null> {
+    return this.roomModel.findOne({
+      roomName,
+    });
+  }
+
+  async findRooms(): Promise<RoomModel[] | mongoose.Document[]> {
+    return this.roomModel.find().populate('messages');
+  }
+
+  async findMessages(offset: number, roomId: string): Promise<Message[] | mongoose.Document[]> {
     try {
-      return this.messageModel
-        .find()
-        .sort({
-          createdAt: -1,
-        })
-        .limit(15)
-        .skip(offset);
+      const room = await this.roomModel
+        .findById(roomId)
+        .populate('messages');
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      return room.messages;
     } catch (err) {
       throw new Error(err);
     }

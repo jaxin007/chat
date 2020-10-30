@@ -1,4 +1,5 @@
 export interface NewMessage {
+  roomId: string;
   text: string | null;
   image: string | null;
   video: string | null;

@@ -46,7 +46,8 @@
     "modules-newline/export-declaration-newline": "error",
     "@typescript-eslint/no-inferrable-types": "off",
     "no-shadow": "off",
-    "@typescript-eslint/no-shadow": ["error"]
+    "@typescript-eslint/no-shadow": ["error"],
+    "no-param-reassign": "off"
   },
   "settings": {
     "import/resolver": {
