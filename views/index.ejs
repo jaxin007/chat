@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<head>
+    <title>Live Chat</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <div class="title" style="text-align: center; margin-top: 50px">
+        <h3>Live chat</h3>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div>
+                <button class="btn btn-dark" id="getMoreButton" style="margin-top: 20px; margin-left: 500px">Get more</button>
+            </div>
+            <div class="title" style="text-align: left; margin-top: 30px">
+                <h3 id="last_messages">Last messages:</h3>
+            </div>
+            <div class="message-box">
+                <ul class="list-group list-group-flush" id="message-list" style="margin-top: 20px;"></ul>
+                <div class="info"></div>
+            </div>
+            <div class="title">
+                <h6 class="title" id="curUsername" style="margin-top: 30px; margin-left: 5px">Change username if you want to send the messages</h6>
+                <h6 class="title" id="curRoom" style="margin-top: 30px; margin-left: 5px">Enter room id or you may send messages to the main chat</h6>
+            </div>
+            <div class="input-group"style="margin-top: 30px;">
+                <input type="text" class="form-control" id="username" placeholder="Change your username">
+                <div class="input-group-append">
+                    <button class="btn btn-warning" style="width: 100px; height: auto;" type="button" id="usernameBtn">Change</button>
+                </div>
+                <input type="text" class="form-control" id="room" placeholder="Room" style="margin-left: 30px">
+                <div class="input-group-append">
+                    <button class="btn btn-info" type="button" id="roomIdBtn">Choose room</button>
+                </div>
+            </div>
+            <div class="input-group" style="margin-top: 30px">
+                <input type="text" class="form-control" id="message" placeholder="Message">
+                <div class="input-group-append">
+                    <button class="btn btn-success" type="button" id="messageBtn">Send message</button>
+                </div>
+            </div>
+            <div class="input-group" style="margin-top: 25px">
+                <div class="input-group-prepend">
+                    <button class="btn btn-primary" id="inputGroupImageAddon">Upload image</button>
+                </div>
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="inputGroupImage" aria-describedby="inputGroupFileAddon01" accept="image/*">
+                    <label class="custom-file-label" for="inputGroupImage">Choose image</label>
+                </div>
+            </div>
+            <div class="input-group" style="margin-top: 25px">
+                <div class="input-group-prepend">
+                    <button class="btn btn-warning" id="inputGroupVideoAddon">Upload video</button>
+                </div>
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="inputGroupVideo" aria-describedby="inputGroupFileAddon01" accept="video/*">
+                    <label class="custom-file-label" for="inputGroupVideo">Choose video</label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+<script type="text/javascript" src="index.js"></script>
+</body>
