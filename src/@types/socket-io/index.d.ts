@@ -1,5 +1,6 @@
 declare namespace SocketIO {
   interface Socket {
-    username: string
+    username: string;
+    currentRoom: string;
   }
 }
