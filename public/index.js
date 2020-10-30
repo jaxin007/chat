@@ -1,9 +1,13 @@
 (() => {
   const socket = io.connect('http://192.168.1.41:3000/');
 
+  const curRoom = document.querySelector('#curRoom');
+  const room = document.querySelector('#room');
+  const roomBtn = document.querySelector('#roomIdBtn');
+
+  const curUsername = document.querySelector('#curUsername');
   const username = document.querySelector('#username');
   const usernameBtn = document.querySelector('#usernameBtn');
-  const curUsername = document.querySelector('#curUsername');
 
   const message = document.querySelector('#message');
   const messageBtn = document.querySelector('#messageBtn');
@@ -12,6 +16,22 @@
   const info = document.querySelector('.info');
 
   username.textContent = '';
+
+  roomBtn.addEventListener('click', () => {
+    if (!room.value) {
+      return alert('Room value field must be not empty');
+    }
+
+    socket.emit('room_choose', {
+      roomName: room.value,
+    });
+
+    room.textContent = room.value;
+
+    curRoom.textContent = `Current room: ${room.value}`;
+
+    room.value = '';
+  })
 
   const toBase = (file) => new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -145,6 +165,7 @@
       info.textContent = ''; // clear status <username> is typing... after sending message
 
       listItem.textContent = `${data.username} : ${data.text}`;
+
       listItem.classList.add('list-group-item');
 
       return messageList.appendChild(listItem);
@@ -175,8 +196,13 @@
     }
   };
 
+  let i = 0
   const displayMessageHandler = (data) => {
     const listItem = document.createElement('li');
+
+    console.log(i++)
+
+    console.log(data);
 
     if (data.text) {
       info.textContent = ''; // clear status <username> is typing... after sending message
@@ -216,11 +242,11 @@
 
   socket.on('display_messages', (data) => displayMessageHandler(data));
 
-  const getMoreMessagesButton = document.querySelector('#getMoreButton');
-
   socket.on('no_more_messages', () => alert('No more messages'));
 
+  const getMoreMessagesButton = document.querySelector('#getMoreButton');
   let offset = 1;
+
   getMoreMessagesButton.addEventListener('click', () => {
     offset += 15;
     return socket.emit('get_more', offset);

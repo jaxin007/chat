@@ -20,13 +20,18 @@
                 <ul class="list-group list-group-flush" id="message-list" style="margin-top: 20px;"></ul>
                 <div class="info"></div>
             </div>
-            <div class="title" style="text-align: left; margin-top: 30px">
-                <h6 class="title" id="curUsername" style="margin-top: 30px">Change username if you want to send messages</h6>
+            <div class="title">
+                <h6 class="title" id="curUsername" style="margin-top: 30px; margin-left: 5px">Change username if you want to send the messages</h6>
+                <h6 class="title" id="curRoom" style="margin-top: 30px; margin-left: 5px">Enter room id or you may send messages to the main chat</h6>
             </div>
             <div class="input-group"style="margin-top: 30px;">
                 <input type="text" class="form-control" id="username" placeholder="Change your username">
                 <div class="input-group-append">
                     <button class="btn btn-warning" style="width: 100px; height: auto;" type="button" id="usernameBtn">Change</button>
+                </div>
+                <input type="text" class="form-control" id="room" placeholder="Room" style="margin-left: 30px">
+                <div class="input-group-append">
+                    <button class="btn btn-info" type="button" id="roomIdBtn">Choose room</button>
                 </div>
             </div>
             <div class="input-group" style="margin-top: 30px">
