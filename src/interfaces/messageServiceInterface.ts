@@ -15,11 +15,9 @@ export interface MessageServiceInterface {
 
   createRoom(roomName: string): Promise<mongoose.Document>;
 
-  findRoom(roomName: string): Promise<mongoose.Document | null>;
+  findMessages(offset: number, roomId: string): Promise<Message[] | mongoose.Document[]>,
+
+  findRoom(roomName: string): Promise<mongoose.Document | null >;
 
   findRooms(): Promise<RoomModel[] | mongoose.Document[]>
-
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  findMessages(offset?: number, roomId: string): Promise<Message[] | mongoose.Document[]>
 }
