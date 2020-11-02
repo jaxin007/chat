@@ -1,6 +1,19 @@
 (() => {
   const socket = io.connect('http://192.168.1.41:3000/');
 
+  const socketEvents = {
+    clearMessages: 'clear_messages',
+    displayMessages: 'display_messages',
+    getMore: 'get_more',
+    newMessage: 'new_message',
+    noMoreMessages: 'no_more_messages',
+    noUsername: 'no_username',
+    receiveMessage: 'receive_message',
+    roomChoose: 'room_choose',
+    setUsername: 'set_username',
+    typing: 'typing',
+  };
+
   const curRoom = document.querySelector('#curRoom');
   const room = document.querySelector('#room');
   const roomBtn = document.querySelector('#roomIdBtn');
@@ -22,7 +35,7 @@
       return alert('Room value field must be not empty');
     }
 
-    socket.emit('room_choose', {
+    socket.emit(socketEvents.roomChoose, {
       roomName: room.value,
     });
 
@@ -31,7 +44,7 @@
     curRoom.textContent = `Current room: ${room.value}`;
 
     room.value = '';
-  })
+  });
 
   const toBase = (file) => new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -52,7 +65,7 @@
 
     const baseImage = await toBase(image);
 
-    socket.emit('new_message', {
+    socket.emit(socketEvents.newMessage, {
       image: baseImage,
     });
   });
@@ -69,7 +82,7 @@
 
     const baseVideo = await toBase(video);
 
-    return socket.emit(socket.emit('new_message', {
+    return socket.emit(socket.emit(socketEvents.newMessage, {
       video: baseVideo,
     }));
   });
@@ -83,7 +96,7 @@
       return alert('Username field must be not empty');
     }
 
-    socket.emit('set_username', {
+    socket.emit(socketEvents.setUsername, {
       username: username.value,
     });
 
@@ -99,7 +112,7 @@
       return alert('Username field must be not empty');
     }
 
-    socket.emit('set_username', {
+    socket.emit(socketEvents.setUsername, {
       username: username.value,
     });
 
@@ -120,7 +133,7 @@
       return;
     }
 
-    socket.emit('new_message', {
+    socket.emit(socketEvents.newMessage, {
       text: message.value,
     });
 
@@ -134,29 +147,13 @@
       return alert('Provide username first');
     }
 
-    socket.emit('new_message', {
+    socket.emit(socketEvents.newMessage, {
       text: message.value,
     });
     message.value = '';
   });
 
   let clearInfoTextContent;
-
-  socket.on('typing', (data) => {
-    clearTimeout(clearInfoTextContent);
-
-    if (!data || !data.username) {
-      return;
-    }
-
-    info.textContent = `${data.username} is typing...`;
-
-    clearInfoTextContent = setTimeout(() => {
-      info.textContent = '';
-    }, 4000);
-  });
-
-  socket.on('no_username', () => alert('Provide username first'));
 
   const messageHandler = (data) => {
     const listItem = document.createElement('li');
@@ -196,13 +193,8 @@
     }
   };
 
-  let i = 0
   const displayMessageHandler = (data) => {
     const listItem = document.createElement('li');
-
-    console.log(i++)
-
-    console.log(data);
 
     if (data.text) {
       info.textContent = ''; // clear status <username> is typing... after sending message
@@ -238,17 +230,35 @@
     }
   };
 
-  socket.on('receive_message', (data) => messageHandler(data));
+  socket.on(socketEvents.clearMessages, () => messageList.innerHTML = '');
 
-  socket.on('display_messages', (data) => displayMessageHandler(data));
+  socket.on(socketEvents.displayMessages, (data) => displayMessageHandler(data));
 
-  socket.on('no_more_messages', () => alert('No more messages'));
+  socket.on(socketEvents.receiveMessage, (data) => messageHandler(data));
+
+  socket.on(socketEvents.noMoreMessages, () => alert('No more messages'));
+
+  socket.on(socketEvents.noUsername, () => alert('Provide username first'));
+
+  socket.on(socketEvents.typing, (data) => {
+    clearTimeout(clearInfoTextContent);
+
+    if (!data || !data.username) {
+      return;
+    }
+
+    info.textContent = `${data.username} is typing...`;
+
+    clearInfoTextContent = setTimeout(() => {
+      info.textContent = '';
+    }, 4000);
+  });
 
   const getMoreMessagesButton = document.querySelector('#getMoreButton');
   let offset = 1;
 
   getMoreMessagesButton.addEventListener('click', () => {
     offset += 15;
-    return socket.emit('get_more', offset);
-  })
+    return socket.emit(socketEvents.getMore, offset);
+  });
 })();
