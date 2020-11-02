@@ -45,8 +45,9 @@ export class MessageService implements MessageServiceInterface {
     roomId: string,
   ): Promise<mongoose.DocumentQuery<null | mongoose.Document, mongoose.Document>> {
     const newMessage = await this.messageModel.create<Message>({
-      username,
       ...message,
+      roomId,
+      username,
     });
 
     await this.roomModel.findByIdAndUpdate(
@@ -79,12 +80,15 @@ export class MessageService implements MessageServiceInterface {
 
   async findMessages(offset: number, roomId: string): Promise<Message[] | mongoose.Document[]> {
     try {
-      const room = await this.roomModel
-        .findById(roomId)
-        .populate('messages');
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      return room.messages;
+      return this.messageModel
+        .find({
+          roomId,
+        })
+        .sort({
+          createdAt: -1,
+        })
+        .limit(15)
+        .skip(offset);
     } catch (err) {
       throw new Error(err);
     }

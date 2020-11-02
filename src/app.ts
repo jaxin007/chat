@@ -70,6 +70,10 @@ io.on(SocketEvents.connection, async (socket: socketIo.Socket) => {
 
   socket.join(defaultRoomName); // connect to default room
 
+  io.sockets
+    .in(socket.currentRoom)
+    .emit(SocketEvents.clearMessages);
+
   messages.forEach((message: any) => {
     io.sockets
       .in(socket.currentRoom)
@@ -91,7 +95,8 @@ io.on(SocketEvents.connection, async (socket: socketIo.Socket) => {
   });
 
   socket.on(SocketEvents.getMore, async (offset: number) => {
-    const moreMessages = await messageService.findMessages(offset, socket.currentRoom);
+    const room = await messageService.findRoom(socket.currentRoom);
+    const moreMessages = await messageService.findMessages(offset, room?._id);
 
     if (!moreMessages.length) {
       return io.sockets
@@ -102,9 +107,7 @@ io.on(SocketEvents.connection, async (socket: socketIo.Socket) => {
     return (moreMessages as Message[]).forEach((message: Message) => {
       io.sockets
         .in(socket.currentRoom)
-        .emit(SocketEvents.displayMessages, {
-          ...message,
-        });
+        .emit(SocketEvents.displayMessages, message);
     });
   });
 
@@ -138,6 +141,10 @@ io.on(SocketEvents.connection, async (socket: socketIo.Socket) => {
     }
 
     socket.join(socket.currentRoom);
+
+    io.sockets
+      .in(socket.currentRoom)
+      .emit(SocketEvents.clearMessages);
 
     const roomMessageHistory = await messageService.findMessages(0, isRoomExists._id);
 

@@ -1,3 +1,4 @@
+/* eslint-disable sort-keys-fix/sort-keys-fix */
 import {
   Schema,
 } from 'mongoose';
@@ -18,6 +19,10 @@ export const messageSchema: Schema = new Schema({
   video: {
     type: Schema.Types.String,
     default: null,
+  },
+  roomId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Room',
   },
 }, {
   timestamps: true,
