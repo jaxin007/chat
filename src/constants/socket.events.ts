@@ -1,4 +1,5 @@
 export enum SocketEvents {
+  clearMessages = 'clear_messages',
   connection = 'connection',
   disconnect = 'disconnect',
   displayMessages = 'display_messages',
