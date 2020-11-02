@@ -29,7 +29,7 @@
     "import/extensions": "off",
     "import/prefer-default-export": "off",
     "class-methods-use-this": "off",
-    "no-console": "off",
+    "no-console": "warn",
     "semi": ["error", "always"],
     "max-len": ["error", {
       "code": 140
