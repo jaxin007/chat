@@ -17,13 +17,13 @@ import {
 } from './config';
 
 import {
-  MessageServiceInterface,
-} from './interfaces';
-import {
   Message,
   NewMessage,
   NewRoomModel,
 } from './models';
+import {
+  MessageServiceInterface,
+} from './interfaces';
 
 const messageService = container.get<MessageServiceInterface>(TYPES.MessageService);
 
@@ -58,15 +58,13 @@ io.on(SocketEvents.connection, async (socket: socketIo.Socket) => {
     socket.currentRoom = defaultRoomName;
   }
 
-  const currentRoom = await messageService.findRoom(socket.currentRoom);
-
   const defaultRoom = await messageService.findRoom(defaultRoomName);
 
   if (!defaultRoom) {
     await messageService.createRoom(defaultRoomName); // create default room if not exists
   }
 
-  const messages = await messageService.findMessages(0, currentRoom?._id);
+  const messages = await messageService.findMessages(0, defaultRoom?._id);
 
   socket.join(defaultRoomName); // connect to default room
 
@@ -81,6 +79,16 @@ io.on(SocketEvents.connection, async (socket: socketIo.Socket) => {
         ...message._doc,
         currentRoom: socket.currentRoom,
       });
+  });
+
+  socket.on(SocketEvents.deleteMessages, async () => {
+    const room = await messageService.findRoom(socket.currentRoom);
+
+    await messageService.deleteMessages(room?._id);
+
+    return io.sockets
+      .in(socket.currentRoom)
+      .emit(SocketEvents.clearMessages);
   });
 
   socket.on(SocketEvents.setUsername, (data): void | socketIo.Socket => {

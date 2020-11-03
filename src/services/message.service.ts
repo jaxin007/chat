@@ -68,6 +68,12 @@ export class MessageService implements MessageServiceInterface {
     });
   }
 
+  async deleteMessages(roomId: string): Promise<mongoose.Query<{n?: number | undefined, ok?: number | undefined}>> {
+    return this.messageModel.deleteMany({
+      roomId,
+    });
+  }
+
   async findRoom(roomName: string): Promise<mongoose.Document | null> {
     return this.roomModel.findOne({
       roomName,

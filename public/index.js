@@ -1,8 +1,9 @@
 (() => {
-  const socket = io.connect('http://192.168.1.41:3000/');
+  const socket = io.connect();
 
   const socketEvents = {
     clearMessages: 'clear_messages',
+    deleteMessages: 'delete_messages',
     displayMessages: 'display_messages',
     getMore: 'get_more',
     newMessage: 'new_message',
@@ -199,12 +200,14 @@
     if (data.text) {
       info.textContent = ''; // clear status <username> is typing... after sending message
 
-      listItem.textContent = `${data.username} : ${data.text}`;
+      listItem.innerHTML = `${data.username} : ${data.text}`
+
       listItem.classList.add('list-group-item');
 
       return messageList.prepend(listItem);
     } if (data.image) {
       const image = document.createElement('img');
+
       listItem.textContent = `${data.username}: `;
 
       listItem.classList.add('list-group-item');
@@ -252,6 +255,12 @@
     clearInfoTextContent = setTimeout(() => {
       info.textContent = '';
     }, 4000);
+  });
+
+  const clearMessagesButton = document.querySelector('#deleteMessages');
+
+  clearMessagesButton.addEventListener('click', () => {
+    return socket.emit(socketEvents.deleteMessages);
   });
 
   const getMoreMessagesButton = document.querySelector('#getMoreButton');

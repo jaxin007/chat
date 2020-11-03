@@ -12,12 +12,12 @@ import {
 } from './services/mongo.service';
 
 import {
-  TYPES,
-} from './constants';
-import {
   MessageServiceInterface,
   MongoServiceInterface,
 } from './interfaces';
+import {
+  TYPES,
+} from './constants';
 
 export const container = new Container();
 
