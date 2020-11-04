@@ -1,5 +1,8 @@
 export enum SocketEvents {
+  clearMessages = 'clear_messages',
   connection = 'connection',
+  deleteMessages = 'delete_messages',
+  deleteRoom = 'delete_room',
   disconnect = 'disconnect',
   displayMessages = 'display_messages',
   getMore = 'get_more',

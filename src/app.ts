@@ -4,23 +4,21 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import express from 'express';
 import socketIo from 'socket.io';
-import {
-  container,
-} from './inversify.config';
 
+import {
+  envConfig,
+} from './config';
 import {
   SocketEvents,
   TYPES,
 } from './constants';
 import {
-  envConfig,
-} from './config';
-
-import {
   MessageServiceInterface,
 } from './interfaces';
 import {
-  Message,
+  container,
+} from './inversify.config';
+import {
   NewMessage,
   NewRoomModel,
 } from './models';
@@ -58,53 +56,62 @@ io.on(SocketEvents.connection, async (socket: socketIo.Socket) => {
     socket.currentRoom = defaultRoomName;
   }
 
-  const currentRoom = await messageService.findRoom(socket.currentRoom);
-
   const defaultRoom = await messageService.findRoom(defaultRoomName);
 
   if (!defaultRoom) {
     await messageService.createRoom(defaultRoomName); // create default room if not exists
   }
 
-  const messages = await messageService.findMessages(0, currentRoom?._id);
+  const messages = await messageService.findMessages(0, defaultRoom?._id);
 
   socket.join(defaultRoomName); // connect to default room
 
-  messages.forEach((message: any) => {
-    io.sockets
-      .in(socket.currentRoom)
-      .emit(SocketEvents.displayMessages, {
-        ...message._doc,
-        currentRoom: socket.currentRoom,
-      });
+  socket.in(socket.currentRoom).emit(SocketEvents.clearMessages);
+
+  socket.in(socket.currentRoom).emit(SocketEvents.displayMessages, {
+    currentRoom: socket.currentRoom,
+    messages,
+  });
+
+  socket.on(SocketEvents.deleteMessages, async () => {
+    const room = await messageService.findRoom(socket.currentRoom);
+
+    await messageService.deleteMessages(room?._id);
+
+    return socket.in(socket.currentRoom).emit(SocketEvents.clearMessages);
+  });
+
+  socket.on(SocketEvents.deleteRoom, async () => {
+    await messageService.deleteRoom(socket.currentRoom);
+
+    socket.leave(socket.currentRoom);
+
+    socket.currentRoom = defaultRoomName;
+
+    socket.join(defaultRoomName);
+
+    return socket.emit(SocketEvents.clearMessages);
   });
 
   socket.on(SocketEvents.setUsername, (data): void | socketIo.Socket => {
     socket.username = data.username;
   });
 
-  socket.on(SocketEvents.typing, () => {
-    socket.broadcast.emit(SocketEvents.typing, {
-      currentRoom: socket.currentRoom,
-      username: socket.username,
-    });
-  });
+  socket.on(SocketEvents.typing, () => socket.broadcast.emit(SocketEvents.typing, {
+    currentRoom: socket.currentRoom,
+    username: socket.username,
+  }));
 
   socket.on(SocketEvents.getMore, async (offset: number) => {
-    const moreMessages = await messageService.findMessages(offset, socket.currentRoom);
+    const room = await messageService.findRoom(socket.currentRoom);
+    const moreMessages = await messageService.findMessages(offset, room?._id);
 
     if (!moreMessages.length) {
-      return io.sockets
-        .in(socket.currentRoom)
-        .emit(SocketEvents.noMoreMessages);
+      return socket.in(socket.currentRoom).emit(SocketEvents.noMoreMessages);
     }
 
-    return (moreMessages as Message[]).forEach((message: Message) => {
-      io.sockets
-        .in(socket.currentRoom)
-        .emit(SocketEvents.displayMessages, {
-          ...message,
-        });
+    return socket.in(socket.currentRoom).emit(SocketEvents.displayMessages, {
+      messages: moreMessages,
     });
   });
 
@@ -115,17 +122,17 @@ io.on(SocketEvents.connection, async (socket: socketIo.Socket) => {
 
     const room = await messageService.findRoom(socket.currentRoom);
 
+    socket.join(socket.currentRoom);
+
     const _id = room?._id;
 
     await messageService.addMessage(socket.username, message, _id);
 
-    return io.sockets
-      .in(socket.currentRoom)
-      .emit(SocketEvents.receiveMessage, {
-        ...message,
-        currentRoom: socket.currentRoom,
-        username: socket.username,
-      });
+    return socket.in(socket.currentRoom).emit(SocketEvents.receiveMessage, {
+      ...message,
+      currentRoom: socket.currentRoom,
+      username: socket.username,
+    });
   });
 
   socket.on(SocketEvents.roomChoose, async (data: NewRoomModel) => {
@@ -139,21 +146,19 @@ io.on(SocketEvents.connection, async (socket: socketIo.Socket) => {
 
     socket.join(socket.currentRoom);
 
-    const roomMessageHistory = await messageService.findMessages(0, isRoomExists._id);
+    socket.in(socket.currentRoom).emit(SocketEvents.clearMessages);
 
-    roomMessageHistory.forEach((message: any) => {
-      io.sockets
-        .in(socket.currentRoom)
-        .emit(SocketEvents.displayMessages, {
-          ...message._doc,
-          currentRoom: socket.currentRoom,
-        });
+    const roomMessagesHistory = await messageService.findMessages(0, isRoomExists._id);
+
+    return socket.in(socket.currentRoom).emit(SocketEvents.displayMessages, {
+      currentRoom: socket.currentRoom,
+      messages: roomMessagesHistory,
     });
   });
 
   socket.on(SocketEvents.disconnect, () => {
     console.log(`User ${socket.id} is disconnected`);
 
-    socket.leave(socket.currentRoom);
+    return socket.leave(socket.currentRoom);
   });
 });

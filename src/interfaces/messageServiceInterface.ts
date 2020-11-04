@@ -11,15 +11,17 @@ export interface MessageServiceInterface {
     username: string,
     message: NewMessage,
     messageId: string,
-  ): Promise<mongoose.DocumentQuery<null | mongoose.Document, mongoose.Document>>
+  ): Promise<mongoose.DocumentQuery<null | mongoose.Document, mongoose.Document>>;
 
   createRoom(roomName: string): Promise<mongoose.Document>;
 
-  findRoom(roomName: string): Promise<mongoose.Document | null>;
+  deleteMessages(roomId: string): Promise<mongoose.Query<{n?: number | undefined, ok?: number | undefined}>>;
 
-  findRooms(): Promise<RoomModel[] | mongoose.Document[]>
+  deleteRoom(roomName: string): Promise<mongoose.Query<{n?: number | undefined, ok?: number | undefined}> | undefined>;
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  findMessages(offset?: number, roomId: string): Promise<Message[] | mongoose.Document[]>
+  findMessages(offset: number, roomId: string): Promise<Message[] | mongoose.Document[]>;
+
+  findRoom(roomName: string): Promise<mongoose.Document | null >;
+
+  findRooms(): Promise<RoomModel[] | mongoose.Document[]>;
 }
