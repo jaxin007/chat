@@ -4,6 +4,7 @@
   const socketEvents = {
     clearMessages: 'clear_messages',
     deleteMessages: 'delete_messages',
+    deleteRoom: 'delete_room',
     displayMessages: 'display_messages',
     getMore: 'get_more',
     newMessage: 'new_message',
@@ -126,7 +127,7 @@
 
   message.addEventListener('keypress', (e) => {
     if (e.key !== 'Enter') {
-      socket.emit('typing');
+      socket.emit(socketEvents.typing);
       return;
     }
 
@@ -154,8 +155,6 @@
     message.value = '';
   });
 
-  let clearInfoTextContent;
-
   const messageHandler = (data) => {
     const listItem = document.createElement('li');
 
@@ -169,6 +168,7 @@
       return messageList.appendChild(listItem);
     } if (data.image) {
       const image = document.createElement('img');
+
       listItem.textContent = `${data.username}: `;
 
       listItem.classList.add('list-group-item');
@@ -184,6 +184,7 @@
       video.controls = true;
 
       listItem.textContent = `${data.username}: `;
+
       listItem.classList.add('list-group-item');
 
       video.src = data.video;
@@ -195,42 +196,44 @@
   };
 
   const displayMessageHandler = (data) => {
-    const listItem = document.createElement('li');
+    data.messages.forEach((data) => {
+      const listItem = document.createElement('li');
 
-    if (data.text) {
-      info.textContent = ''; // clear status <username> is typing... after sending message
+      if (data.text) {
+        info.textContent = ''; // clear status <username> is typing... after sending message
 
-      listItem.innerHTML = `${data.username} : ${data.text}`
+        listItem.innerHTML = `${data.username} : ${data.text}`;
 
-      listItem.classList.add('list-group-item');
+        listItem.classList.add('list-group-item');
 
-      return messageList.prepend(listItem);
-    } if (data.image) {
-      const image = document.createElement('img');
+        return messageList.prepend(listItem);
+      } if (data.image) {
+        const image = document.createElement('img');
 
-      listItem.textContent = `${data.username}: `;
+        listItem.textContent = `${data.username}: `;
 
-      listItem.classList.add('list-group-item');
+        listItem.classList.add('list-group-item');
 
-      image.src = data.image;
+        image.src = data.image;
 
-      messageList.prepend(listItem);
+        messageList.prepend(listItem);
 
-      return messageList.prepend(image);
-    } if (data.video) {
-      const video = document.createElement('video');
+        return messageList.prepend(image);
+      } if (data.video) {
+        const video = document.createElement('video');
 
-      video.controls = true;
+        video.controls = true;
 
-      listItem.textContent = `${data.username}: `;
-      listItem.classList.add('list-group-item');
+        listItem.textContent = `${data.username}: `;
+        listItem.classList.add('list-group-item');
 
-      video.src = data.video;
+        video.src = data.video;
 
-      messageList.prepend(listItem);
+        messageList.prepend(listItem);
 
-      return messageList.prepend(video);
-    }
+        return messageList.prepend(video);
+      }
+    })
   };
 
   socket.on(socketEvents.clearMessages, () => messageList.innerHTML = '');
@@ -242,6 +245,16 @@
   socket.on(socketEvents.noMoreMessages, () => alert('No more messages'));
 
   socket.on(socketEvents.noUsername, () => alert('Provide username first'));
+
+  const deleteRoomButton = document.querySelector('#deleteRoomBtn');
+
+  deleteRoomButton.addEventListener('click', () => {
+    curRoom.textContent = `Current room: default`;
+
+    return socket.emit(socketEvents.deleteRoom);
+  });
+
+  let clearInfoTextContent;
 
   socket.on(socketEvents.typing, (data) => {
     clearTimeout(clearInfoTextContent);
