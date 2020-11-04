@@ -10,9 +10,9 @@
     </div>
     <div class="card">
         <button class="btn btn-danger" type="button" id="deleteMessages">Delete messages</button>
-        <button type="button" class="btn btn-dark" id="getMoreButton" style="margin-top: 10px">Get more</button>
+        <button type="button" class="btn btn-primary" id="getMoreButton" style="margin-top: 10px">Get more</button>
         <div class="card-body">
-            <div class="title" style="text-align: left; margin-top: 0px">
+            <div class="title" style="text-align: left;">
                 <h3 id="last_messages">Last messages:
                 </h3>
             </div>
@@ -22,7 +22,7 @@
             </div>
             <div class="title">
                 <h6 class="title" id="curUsername" style="margin-top: 30px; margin-left: 5px">Change username if you want to send the messages</h6>
-                <h6 class="title" id="curRoom" style="margin-top: 30px; margin-left: 5px">Enter room id or you may send messages to the main chat</h6>
+                <h6 class="title" id="curRoom" style="margin-top: 30px; margin-left: 5px">Current room: default</h6>
             </div>
             <div class="input-group" style="margin-top: 30px;">
                 <input type="text" class="form-control" id="username" placeholder="Change your username">
@@ -32,6 +32,7 @@
                 <input type="text" class="form-control" id="room" placeholder="Room" style="margin-left: 30px">
                 <div class="input-group-append">
                     <button class="btn btn-info" type="button" id="roomIdBtn">Choose room</button>
+                    <button class="btn btn-danger btn-sm" type="button" id="deleteRoomBtn">Delete room</button>
                 </div>
             </div>
             <div class="input-group" style="margin-top: 30px">
@@ -45,7 +46,7 @@
                     <button class="btn btn-primary" id="inputGroupImageAddon">Upload image</button>
                 </div>
                 <div class="custom-file">
-                    <input type="file" class="custom-file-input" id="inputGroupImage" aria-describedby="inputGroupFileAddon01" accept="image/*">
+                    <input type="file" class="custom-file-input" id="inputGroupImage" accept="image/*">
                     <label class="custom-file-label" for="inputGroupImage">Choose image</label>
                 </div>
             </div>
@@ -54,7 +55,7 @@
                     <button class="btn btn-warning" id="inputGroupVideoAddon">Upload video</button>
                 </div>
                 <div class="custom-file">
-                    <input type="file" class="custom-file-input" id="inputGroupVideo" aria-describedby="inputGroupFileAddon01" accept="video/*">
+                    <input type="file" class="custom-file-input" id="inputGroupVideo" accept="video/*">
                     <label class="custom-file-label" for="inputGroupVideo">Choose video</label>
                 </div>
             </div>
