@@ -30,35 +30,44 @@
     "import/prefer-default-export": "off",
     "class-methods-use-this": "off",
     "no-console": "warn",
-    "semi": ["error", "always"],
     "max-len": ["error", {
       "code": 140
     }],
     "no-underscore-dangle": "off",
     "object-curly-newline": ["error", {
       "ObjectExpression": "always",
-      "ObjectPattern": { "multiline": true },
+      "ObjectPattern": {
+        "multiline": true
+      },
       "ImportDeclaration": "always",
-      "ExportDeclaration": { "multiline": true, "minProperties": 3 }
+      "ExportDeclaration": {
+        "multiline": true,
+        "minProperties": 3
+      }
     }],
     "object-property-newline": ["error", {
       "allowAllPropertiesOnSameLine": false
     }],
     "modules-newline/import-declaration-newline": "error",
     "modules-newline/export-declaration-newline": "error",
-    "@typescript-eslint/no-inferrable-types": "off",
     "no-shadow": "off",
-    "@typescript-eslint/no-shadow": ["error"],
     "no-param-reassign": "off",
+    "semi": "off",
     "sort-keys-fix/sort-keys-fix": "error",
     "typescript-sort-keys/interface": "error",
-    "typescript-sort-keys/string-enum": "error"
+    "typescript-sort-keys/string-enum": "error",
+    "@typescript-eslint/semi": ["error"],
+    "@typescript-eslint/no-inferrable-types": "off",
+    "@typescript-eslint/no-shadow": ["error"]
   },
   "settings": {
     "import/resolver": {
       "node": {
         "extensions": [
-          ".js", ".jsx", ".ts", ".tsx"
+          ".js",
+          ".jsx",
+          ".ts",
+          ".tsx"
         ]
       }
     }
