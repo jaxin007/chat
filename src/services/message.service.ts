@@ -1,13 +1,22 @@
-import mongoose from 'mongoose';
 import {
-  injectable,
   inject,
+  injectable,
 } from 'inversify';
+import mongoose from 'mongoose';
 
 import {
   SchemaNames,
   TYPES,
 } from '../constants';
+import {
+  MessageServiceInterface,
+} from '../interfaces';
+import {
+  Message,
+  NewMessage,
+  NewRoomModel,
+  RoomModel,
+} from '../models';
 import {
   messageSchema,
 } from '../schemas/messageSchema';
@@ -15,24 +24,13 @@ import {
   roomSchema,
 } from '../schemas/roomSchema';
 
-import {
-  Message,
-  NewMessage,
-  NewRoomModel,
-  RoomModel,
-} from '../models';
-
-import {
-  MessageServiceInterface,
-} from '../interfaces';
-
 @injectable()
 export class MessageService implements MessageServiceInterface {
-  @inject(TYPES.MongoService) protected readonly connection: Promise<typeof mongoose>
+  @inject(TYPES.MongoService) protected readonly connection: Promise<typeof mongoose>;
 
-  protected readonly messageModel: mongoose.Model<mongoose.Document>
+  protected readonly messageModel: mongoose.Model<mongoose.Document>;
 
-  protected readonly roomModel: mongoose.Model<mongoose.Document>
+  protected readonly roomModel: mongoose.Model<mongoose.Document>;
 
   constructor() {
     this.messageModel = mongoose.model(SchemaNames.message, messageSchema).on('error', (err) => console.error(err.message));
@@ -71,6 +69,26 @@ export class MessageService implements MessageServiceInterface {
   async deleteMessages(roomId: string): Promise<mongoose.Query<{n?: number | undefined, ok?: number | undefined}>> {
     return this.messageModel.deleteMany({
       roomId,
+    });
+  }
+
+  async deleteRoom(roomName?: string): Promise<mongoose.Query<{n?: number | undefined, ok?: number | undefined}> | undefined> {
+    if (!roomName) {
+      return;
+    }
+
+    const room = await this.findRoom(roomName);
+
+    if (!room) {
+      return;
+    }
+
+    await this.messageModel.deleteMany({
+      roomId: room._id,
+    });
+
+    await this.roomModel.deleteOne({
+      roomName,
     });
   }
 

@@ -17,6 +17,8 @@ export interface MessageServiceInterface {
 
   deleteMessages(roomId: string): Promise<mongoose.Query<{n?: number | undefined, ok?: number | undefined}>>;
 
+  deleteRoom(roomName: string): Promise<mongoose.Query<{n?: number | undefined, ok?: number | undefined}> | undefined>;
+
   findMessages(offset: number, roomId: string): Promise<Message[] | mongoose.Document[]>;
 
   findRoom(roomName: string): Promise<mongoose.Document | null >;
