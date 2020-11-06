@@ -2,15 +2,13 @@ import mongoose from 'mongoose';
 
 import {
   Message,
-  NewMessage,
   RoomModel,
 } from '../models';
 
 export interface MessageServiceInterface {
   addMessage(
-    username: string,
-    message: NewMessage,
-    messageId: string,
+    message: Message,
+    roomId: string,
   ): Promise<mongoose.DocumentQuery<null | mongoose.Document, mongoose.Document>>;
 
   createRoom(roomName: string): Promise<mongoose.Document>;
