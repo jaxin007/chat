@@ -13,7 +13,6 @@ import {
 } from '../interfaces';
 import {
   Message,
-  NewMessage,
   NewRoomModel,
   RoomModel,
 } from '../models';
@@ -38,14 +37,12 @@ export class MessageService implements MessageServiceInterface {
   }
 
   async addMessage(
-    username: string,
-    message: NewMessage,
+    message: Message,
     roomId: string,
   ): Promise<mongoose.DocumentQuery<null | mongoose.Document, mongoose.Document>> {
     const newMessage = await this.messageModel.create<Message>({
       ...message,
       roomId,
-      username,
     });
 
     await this.roomModel.findByIdAndUpdate(
@@ -67,6 +64,10 @@ export class MessageService implements MessageServiceInterface {
   }
 
   async deleteMessages(roomId: string): Promise<mongoose.Query<{n?: number | undefined, ok?: number | undefined}>> {
+    await this.messageModel.deleteOne({
+      roomId,
+    });
+
     return this.messageModel.deleteMany({
       roomId,
     });
