@@ -3,9 +3,9 @@ Live chat application built on Socket.io
 
 ### Prerequisites
 You will need to have the following installed
-* *npm*
-* *node.js*
 * *docker-compose*
+* *node.js*
+* *npm*
 
 ### Installing
 
@@ -19,12 +19,14 @@ You will need to have the following installed
 
 5. `npm start` - Will begin the app on default port `3000`
 
+6. Go to the `http://localhost:3000`
+
 ## Built With
 
-* [Node.js](https://nodejs.org/en) - Run-time environment includes everything you need to execute a program written in JavaScript
+* [Node.js](https://nodejs.org) - Run-time environment includes everything you need to execute a program written in JavaScript
 * [Express.js](https://expressjs.com) - Web application framework used with Node.js. Provides server capabilities
 * [Nodemon](https://www.npmjs.com/package/nodemon) - Utility that will monitor for any changes in your source and automatically restart your server.
-* [EJS](http://www.embeddedjs.com) - Helps creates Embedded JavaScripts templates (Views).
+* [EJS](https://ejs.co) - Helps creates Embedded JavaScripts templates (Views).
 * [Socket.io](https://socket.io) - Provides the library for instant messaging, Live Chat.
 * [Bootstrap](https://getbootstrap.com) - Used for CSS and NavBar
 * [Docker-compose](https://docs.docker.com/compose) - Tool for defining and running multi-container Docker applications.
