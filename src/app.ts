@@ -1,4 +1,3 @@
-import 'dotenv/config';
 import socketIo from 'socket.io';
 
 import {
