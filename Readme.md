@@ -26,7 +26,7 @@ You will need to have the following installed
 * [Node.js](https://nodejs.org) - Run-time environment includes everything you need to execute a program written in JavaScript
 * [Express.js](https://expressjs.com) - Web application framework used with Node.js. Provides server capabilities
 * [Nodemon](https://www.npmjs.com/package/nodemon) - Utility that will monitor for any changes in your source and automatically restart your server.
-* [EJS](https://ejs.co) - Helps creates Embedded JavaScripts templates (Views).
+* [Pug](https://www.npmjs.com/package/pug) - High performance template engine heavily influenced by Haml and implemented with JavaScript for Node.js and browsers.
 * [Socket.io](https://socket.io) - Provides the library for instant messaging, Live Chat.
 * [Bootstrap](https://getbootstrap.com) - Used for CSS and NavBar
 * [Docker-compose](https://docs.docker.com/compose) - Tool for defining and running multi-container Docker applications.
