@@ -21,6 +21,16 @@ You will need to have the following installed
 
 6. Go to the `http://localhost:3000`
 
+### Docker
+
+You may use this app only via the Docker.
+
+You can use this command for the first launch or on CI.
+
+```npm
+npm run docker:init
+```
+
 ## Built With
 
 * [Node.js](https://nodejs.org) - Run-time environment includes everything you need to execute a program written in JavaScript

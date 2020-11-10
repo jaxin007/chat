@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon -L ./src/app.ts",
+    "docker:init": "docker-compose build backend && docker-compose up",
     "docker:down": "docker-compose down",
     "docker:up": "docker-compose up"
   },

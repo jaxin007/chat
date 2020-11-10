@@ -7,6 +7,18 @@ services:
     ports:
       - "27017:27017"
 
+  backend:
+    container_name: "chat-backend"
+    build: .
+    volumes:
+      - ".:/app"
+      - "/app/node_modules"
+    ports:
+      - "3000:3000"
+    env_file: .env
+    depends_on:
+      - mongoDb
+
 volumes:
   data_backend_libs:
     driver: local
