@@ -35,7 +35,7 @@ export const appPromise = (async () => {
 
       app.use(express.static('public'));
 
-      app.set('view engine', 'ejs');
+      app.set('view engine', 'pug');
     })
     .setErrorConfig((app) => {
       app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {

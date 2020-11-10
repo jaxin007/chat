@@ -1,0 +1,39 @@
+.title {
+  text-align: center;
+  margin-top: 25px;
+}
+
+.title__last-messages {
+  text-align: left;
+}
+
+.chat__message_delete {
+  margin-bottom: 10px;
+}
+
+.list__group-flush {
+  margin-top: 20px;
+}
+
+.title__status {
+  margin-top: 30px;
+  margin-left: 5px;
+  text-align: left;
+}
+
+.input-group {
+  margin-top: 30px;
+}
+
+.btn-warning {
+  width: 100px;
+  height: auto;
+}
+
+.btn__video-upload {
+  width: 130px
+}
+
+.form-control__second {
+  margin-left: 30px;
+}

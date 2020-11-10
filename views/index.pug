@@ -1,0 +1,55 @@
+html(lang='en')
+  head
+    title Live Chat
+    style
+      include style.css
+    link(rel='stylesheet', href='https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css')
+body
+  div(class='container')
+    div(class='title')
+      h3 Live Chat
+    div(class='card')
+      button(class='btn btn-danger chat__message_delete' type='button' id='deleteMessages') Delete messages
+      button(class='btn btn-primary chat__get_messages' type='button' id='getMoreButton') Get more
+      div(class='card-body')
+        div(class='title title__last-messages')
+          h3(id='last_messages') Last messages:
+
+        div(class='message-box')
+          ul(class='list-group list__group-flush' id='message-list')
+          div(class='info')
+
+        div(class='title')
+          h6(class='title__status' id='curUsername') Change username if you want to send the messages
+          h6(class='title__status' id='curRoom') Current room: default
+
+        div(class='input-group')
+          input(class='form-control' type='text' id='username' placeholder='Change your username')
+          div(class='input-group-append')
+            button(class='btn btn-warning' id='usernameBtn') Change
+          input(class='form-control form-control__second' type='text' id='room' placeholder='Select room')
+          div(class='input-group-append')
+            button(class='btn btn-info' id='roomIdBtn') Choose room
+
+        div(class='input-group')
+          input(class='form-control' type='text' id='message' placeholder='Message')
+          div(class='input-group-append')
+            button(class='btn btn-success' id='messageBtn') Send message
+
+        div(class='input-group')
+          div(class='input-group-prepend')
+            button(class='btn btn-primary' id='inputGroupImageAddon') Upload image
+          div(class='custom-file')
+            input(accept='image/*' class='custom-file-input' type='file' id='inputGroupImage')
+            label(class='custom-file-label' for='inputGroupImage') Choose image
+
+        div(class='input-group')
+          div(class='input-group-prepend')
+            button(class='btn btn-warning btn__video-upload' id='inputGroupVideoAddon') Upload video
+          div(class='custom-file')
+            input(accept='video/*' class='custom-file-input' type='file' id='inputGroupVideo')
+            label(class='custom-file-label' for='inputGroupVideo') Choose video
+
+script(src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js')
+script(src='https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.0/axios.min.js')
+script(src='index.js' type='text/javascript')
